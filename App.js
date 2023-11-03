@@ -10,21 +10,23 @@ import Layout from './components/Layout';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  useDeviceContext(tw, { withDeviceColorScheme: false });
+  //    👇 -- i'm proposing that `useDeviceContext` could return a string for memoization busting
+  const memoBuster = useDeviceContext(tw, { withDeviceColorScheme: false });
+
   const [, toggleColorScheme] = useAppColorScheme(tw);
 
   return (
     <Layout>
       <TouchableOpacity onPress={toggleColorScheme}>
         <Text
-          style={tw`bg-gray-200 dark:bg-gray-900 text-black dark:text-white
-                capitalize p-2 mt-24 text-center`}
+          style={tw`bg-gray-200 dark:bg-gray-900 text-black dark:text-white capitalize p-2 mt-24 text-center`}
         >
           toggle theme
         </Text>
       </TouchableOpacity>
       <NavigationContainer>
         <Stack.Navigator
+          key={memoBuster} // 👋 <-- busting it here seems(?) to work
           screenOptions={{
             headerRight: () => (
               <TouchableOpacity onPress={toggleColorScheme}>
